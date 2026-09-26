@@ -1,18 +1,17 @@
 #include <array>
 #include <iostream>
 #include <cmath>
+#include "config.hpp" // <--- Include single config
+#include <array>
+#include <cmath>
 
-const int LAYERS = 2;
-const int TOKENS = 2000;
-const int DIMENSIONS = 10;
+const int LAYERS = CFG_LAYERS;
+const int TOKENS = CFG_TOKENS;
+const int DIMENSIONS = CFG_DIMENSIONS;
 
 using Matrix2d = std::array<std::array<float, DIMENSIONS>, DIMENSIONS>;
-        // we are making a class called wieghtmatrix
-        //  memory of 100 cells 
-        // std::array<type, amount> is the syntax i hope!
-        // 
 using Matrix3d = std::array<std::array<std::array<float, DIMENSIONS>, TOKENS>, LAYERS>;
-using Vector= std::array<float, DIMENSIONS>;
+using Vector   = std::array<float, DIMENSIONS>;
 
 class KnowledgeClusterCpp {
     private:
