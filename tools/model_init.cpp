@@ -13,7 +13,7 @@ int main() {
     std::filesystem::create_directories("output");
 
     // 1. READ RAW DATASET & COUNT FREQUENCIES
-    std::ifstream dataset("output/dataset.txt");
+    std::ifstream dataset("data/dataset.txt");
     if (!dataset.is_open()) {
         std::cerr << "Error: Could not open dataset.txt\n";
         return 1;
