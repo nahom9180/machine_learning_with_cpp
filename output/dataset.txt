@@ -1,0 +1,20 @@
+the cat sat on the mat
+the dog sat on the rug
+the cat ate the food
+the dog ate the food
+a cat ran to the tree
+a dog ran to the park
+the cat slept on the mat
+the dog slept on the rug
+the bird flew to the tree
+a bird ate the food
+the cat ran to the mat
+the dog ran to the tree
+the bird sat on the tree
+a cat slept on the rug
+a dog ate the food in the park
+the cat ran in the park
+a bird flew to the park
+the dog slept on the mat
+a cat sat on the tree
+the bird ate food on the rug

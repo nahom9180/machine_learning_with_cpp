@@ -1,0 +1,1 @@
+  if (!tokenizer.load_vocab("output/vocab.txt")){
