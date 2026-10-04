@@ -24,10 +24,10 @@ struct Prediction {
 
 // Predicts the top K most probable next words
 std::vector<Prediction> get_top_k(
-    const std::string& word, 
-    const Tokenizer& tokenizer, 
-    EmbeddingStore& store, 
-    const KnowledgeClusterCpp& cluster, 
+    const std::string& word,
+    const Tokenizer& tokenizer,
+    EmbeddingStore& store,
+    const KnowledgeClusterCpp& cluster,
     int k = 3
 ) {
     int id = tokenizer.get_id(word);
@@ -52,9 +52,9 @@ std::vector<Prediction> get_top_k(
     // Sort descending by similarity score
     size_t top_count = std::min(static_cast<size_t>(k), candidates.size());
     std::partial_sort(candidates.begin(), candidates.begin() + top_count, candidates.end(),
-        [](const Prediction& a, const Prediction& b) {
-            return a.score > b.score;
-        });
+                      [](const Prediction& a, const Prediction& b) {
+                          return a.score > b.score;
+                      });
 
     candidates.resize(top_count);
     return candidates;
@@ -62,10 +62,10 @@ std::vector<Prediction> get_top_k(
 
 // Generates continuous text step-by-step from a single seed word
 std::string autocomplete_sentence(
-    const std::string& seed, 
-    const Tokenizer& tokenizer, 
-    EmbeddingStore& store, 
-    const KnowledgeClusterCpp& cluster, 
+    const std::string& seed,
+    const Tokenizer& tokenizer,
+    EmbeddingStore& store,
+    const KnowledgeClusterCpp& cluster,
     int max_length = 7
 ) {
     std::string current_word = seed;
@@ -104,8 +104,9 @@ int main() {
         return 1;
     }
 
-    // 2. Load Embeddings
-    EmbeddingStore store(0, CFG_DIMENSIONS);
+    // 2. Load Embeddings (FIXED)
+    size_t vocab_size = tokenizer.vocab_size();
+    EmbeddingStore store(vocab_size, CFG_DIMENSIONS);
     if (!store.load_from_file("output/embeddings.bin")) {
         std::cerr << "Error: Could not load output/embeddings.bin\n";
         return 1;
@@ -118,8 +119,8 @@ int main() {
         return 1;
     }
 
-    std::cout << "✔ Model loaded successfully (" << tokenizer.vocab_size() 
-              << " tokens | " << CFG_DIMENSIONS << " dimensions).\n";
+    std::cout << "✔ Model loaded successfully (" << tokenizer.vocab_size()
+    << " tokens | " << CFG_DIMENSIONS << " dimensions).\n";
     std::cout << "Type a starting word (or '" << COLOR_YELLOW << "exit" << COLOR_RESET << "' to quit).\n\n";
 
     std::string input;
@@ -132,23 +133,23 @@ int main() {
         // Check if word exists in vocabulary
         int id = tokenizer.get_id(input);
         if (id == 0 && input != tokenizer.get_token(0)) {
-            std::cout << COLOR_YELLOW << "  [Warning] '" << input 
-                      << "' is not in the vocabulary! Using fallback.\n" << COLOR_RESET;
+            std::cout << COLOR_YELLOW << "  [Warning] '" << input
+            << "' is not in the vocabulary! Using fallback.\n" << COLOR_RESET;
         }
 
         // 1. Show Top 3 Predictions
         auto top_3 = get_top_k(input, tokenizer, store, cluster, 3);
         std::cout << "  " << COLOR_GREEN << "Top Predictions:" << COLOR_RESET << "\n";
         for (size_t i = 0; i < top_3.size(); ++i) {
-            std::cout << "    " << (i + 1) << ". " 
-                      << std::left << std::setw(12) << tokenizer.get_token(top_3[i].token_id)
-                      << " (score: " << std::fixed << std::setprecision(3) << top_3[i].score << ")\n";
+            std::cout << "    " << (i + 1) << ". "
+            << std::left << std::setw(12) << tokenizer.get_token(top_3[i].token_id)
+            << " (score: " << std::fixed << std::setprecision(3) << top_3[i].score << ")\n";
         }
 
         // 2. Autocomplete a full phrase
         std::string generated = autocomplete_sentence(input, tokenizer, store, cluster, 6);
-        std::cout << "  " << COLOR_MAGENTA << "Autocompletion:" << COLOR_RESET 
-                  << " \"" << generated << "\"\n\n";
+        std::cout << "  " << COLOR_MAGENTA << "Autocompletion:" << COLOR_RESET
+        << " \"" << generated << "\"\n\n";
     }
 
     std::cout << "\n[Shutdown] Goodbye!\n";

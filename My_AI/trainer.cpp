@@ -23,6 +23,7 @@ struct Trigram {
     int curr_id;
     int target_id;
 };
+
 int main() {
     std::cout << "\n============================================================\n";
     std::cout << "      HELEN AI: CONTRASTIVE NEGATIVE-SAMPLING TRAINER       \n";
@@ -32,13 +33,14 @@ int main() {
     Tokenizer tokenizer;
     if (!tokenizer.load_vocab_bin("output/tokens.bin")) return 1;
 
-    EmbeddingStore store(0, CFG_DIMENSIONS);
+    // Get the vocabulary size dynamically before passing it to EmbeddingStore
+    size_t vocab_size = tokenizer.vocab_size();
+
+    EmbeddingStore store(vocab_size, CFG_DIMENSIONS);
     if (!store.load_from_file("output/embeddings.bin")) return 1;
 
     KnowledgeClusterCpp cluster;
     if (!cluster.load_from_file("output/weights.bin")) return 1;
-
-    size_t vocab_size = tokenizer.vocab_size();
 
     // 2. Parse Clean Dataset
     std::ifstream dataset("data/dataset.txt");
@@ -145,16 +147,16 @@ int main() {
 
         if (epoch == 1 || epoch % 10 == 0 || epoch == TOTAL_EPOCHS) {
             std::cout << "Epoch [" << std::setw(2) << epoch << "/" << TOTAL_EPOCHS << "] "
-                      << "Loss: " << std::fixed << std::setprecision(4) 
-                      << (total_loss / dataset_trigrams.size()) << "\n";
+            << "Loss: " << std::fixed << std::setprecision(4)
+            << (total_loss / dataset_trigrams.size()) << "\n";
         }
     }
 
     auto end_time = std::chrono::high_resolution_clock::now();
     double ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();
 
-    std::cout << COLOR_GREEN << "\n✔ Contrastive training finished in " 
-              << (ms / 1000.0) << " seconds!\n" << COLOR_RESET;
+    std::cout << COLOR_GREEN << "\n✔ Contrastive training finished in "
+    << (ms / 1000.0) << " seconds!\n" << COLOR_RESET;
 
     store.save_to_file("output/embeddings.bin");
     cluster.save_to_file("output/weights.bin");

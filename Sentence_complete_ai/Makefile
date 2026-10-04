@@ -3,7 +3,7 @@
 # ==============================================================================
 CXX      := g++
 CXXFLAGS := -O3 -march=native -std=c++17 -Wall -Wextra
-INCLUDES := -I/usr/include/eigen3
+INCLUDES := -I/usr/include/eigen3 -I/usr/include/opencv4
 
 # Directories
 TEST_DIR := tests
@@ -28,7 +28,7 @@ all: $(BINS)
 $(BIN_DIR)/%: $(TEST_DIR)/%.cpp
 	@mkdir -p $(BIN_DIR)
 	@echo "[CXX] Compiling $< -> $@"
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $< -o $@ -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
 
 # Run ALL tests in bin/
 test: $(BINS)
